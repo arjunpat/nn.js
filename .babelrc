@@ -2,7 +2,7 @@
     "presets": [
         ["env", {
                 "targets": {
-                    "safari": 10
+                    "safari": 8
                 }
             }
         ]
