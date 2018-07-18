@@ -1,0 +1,35 @@
+{
+	"name": "nn.js",
+	"version": "0.0.0",
+	"description": "A lightweight, high-level neural network library written in TypeScript.",
+	"main": "src/main.ts",
+	"scripts": {
+		"build": "webpack",
+		"watch": "webpack --watch"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/arjunpat/nnjs.git"
+	},
+	"keywords": [
+		"neural-networks",
+		"javascript",
+		"machine-learning"
+	],
+	"author": "Arjun Patrawala",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/arjunpat/nnjs/issues"
+	},
+	"homepage": "https://github.com/arjunpat/nnjs#readme",
+	"devDependencies": {
+		"babel-core": "^6.26.3",
+		"babel-loader": "^7.1.5",
+		"babel-preset-env": "^1.7.0",
+		"ts-loader": "^4.4.2",
+		"typescript": "^2.9.2",
+		"webpack": "^4.16.1",
+		"webpack-cli": "^3.1.0"
+	},
+	"dependencies": {}
+}

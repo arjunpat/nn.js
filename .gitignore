@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+
+# even though this is supposed to live in our git repos
+package-lock.json
+
+# for now, people can build themselves
+dist/nn.js

@@ -1,2 +1,2 @@
 # nnjs
-A lightweight, high-level neural network library written in JavaScript.
+A lightweight, high-level neural network library written in TypeScript.
