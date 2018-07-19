@@ -30,16 +30,19 @@ class Matrix {
 	}
 
 
-	public map(func: Function): void {
+	public map(func: Function): Matrix {
 		for (let i: number = 0; i < this.rows; i++)
 			for (let j: number = 0; j < this.cols; j++)
 				this.data[i][j] = func(this.data[i][j], i, j);
+		
+		return this;
 	}
 
 	/* getter/setter/append */
 
 	public set(i: number, j: number, number: number): void {
-		if (i < this.rows && j < this.cols)
+
+		if (this.checkIndices(i, j))
 			this.data[i][j] = number;
 		else
 			throw new TypeError('index out of range');
@@ -47,21 +50,23 @@ class Matrix {
 	}
 
 	public get(i: number, j: number): number {
-		if (i < this.rows && j < this.cols)
+		if (this.checkIndices(i, j))
 			return this.data[i][j];
 		else
 			throw new TypeError('index out of range');
 	}
 
-	public addToBottom(arr: number[]): void {
+	public addToBottom(arr: number[]): Matrix {
 		if (arr.length !== this.cols)
 			throw new TypeError('invalid arguments');
 
 		this.data.push(arr);
 		this.rows++;
+
+		return this;
 	}
 
-	public addToRight(arr: number[]): void {
+	public addToRight(arr: number[]): Matrix {
 		if (arr.length !== this.rows)
 			throw new TypeError('invalid arguments');
 		
@@ -69,6 +74,8 @@ class Matrix {
 			this.data[i].push(arr[i]);
 		
 		this.cols++;
+
+		return this;
 	}
 
 	public getRows(): number { return this.rows; }
@@ -77,6 +84,17 @@ class Matrix {
 
 	public toArray(): number[][] {
 		return this.clone().data;
+	}
+
+	public to1dArray(): number[] {
+		if (this.cols !== 1)
+			throw new TypeError('There is not 1 column');
+		
+		let arr: number[] = [];
+		for (let i: number = 0; i < this.rows; i++)
+			arr.push(this.data[i][0]);
+		
+		return arr;
 	}
 
 	/*
@@ -97,12 +115,12 @@ class Matrix {
 		checkDimensions(a, b);
 
 		let m = new Matrix(a.getRows(), a.getCols());
-		m.map((val: number, i: number, j: number) => a.get(i, j) + b.get(i, j))
+		m.map((val: number, i: number, j: number) => a.get(i, j) - b.get(i, j));
 
 		return m;
 	}
 
-	// matrix dot product
+	// matrix product - the real deal
 	public static product(a: Matrix, b: Matrix): Matrix {
 		// in attempt to reduce function calls for speed
 		let aCols = a.getCols(),
@@ -150,6 +168,7 @@ class Matrix {
 
 			return int ? Math.floor(v) : v;
 		});
+
 		return this;
 	}
 
@@ -196,10 +215,36 @@ class Matrix {
 		return this;
 	}
 
+	public removeCol(colNumber: number): Matrix {
+		if (!this.checkIndices(1, colNumber))
+			throw new TypeError('invalid arguments');
+		
+
+		for (let i: number = 0; i < this.rows; i++)
+			this.data[i].splice(colNumber, 1);
+
+		this.cols--;
+
+		return this;
+	}
+
+	public removeRow(rowNumber: number): Matrix {
+
+		if (!this.checkIndices(rowNumber, 1))
+			throw new TypeError('invalid arguments');
+
+		this.data.splice(rowNumber, 1);
+		this.rows--;
+
+		return this;
+	}
+
 
 	/* helper methods */
 
 	public print(decimalPoints: number = 3): void {
+		// doesn't return itself so we don't see it in the console
+
 		let text: string = '';
 		for (let i: number = 0; i < this.rows; i++) {
 			for (let j: number = 0; j < this.cols; j++) {
@@ -233,6 +278,12 @@ class Matrix {
 				m.set(i, j, this.data[i][j]);
 
 		return m;
+	}
+
+	public checkIndices(i: number, j: number): boolean {
+		if (i < this.rows && i >= 0 && j < this.cols && j >= 0)
+			return true;
+		return false;
 	}
 }
 

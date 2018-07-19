@@ -14,7 +14,12 @@ import { NetworkArch } from './interfaces';
 	/* activation functions */
 	namespace.activation = {};
 
-	namespace.activation.sigmoid = (stretch: number = 1) => (x: number) => 1 / (1 + (Math.E ** -x));
+	namespace.activation.sigmoid = (stretch: number = 1) => {
+		return {
+			y: (x: number) => 1 / (1 + (Math.E ** -(x / stretch))),
+			dydy: (y: number) => y * (1 - y)
+		};
+	}
 	// ReLU's
 	namespace.activation.ReLU = () => (x: number) => Math.max(0, x);
 	namespace.activation.PReLU = (leak: number) => (x: number) => x >= 0 ? x : leak * x;
