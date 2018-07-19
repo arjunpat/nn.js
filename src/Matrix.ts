@@ -1,8 +1,3 @@
-interface Window {
-	chrome: any,
-	Matrix: any
-}
-declare let window: Window;
 
 /* helper functions */
 function checkDimensions(a: Matrix, b: Matrix) {
@@ -15,19 +10,25 @@ class Matrix {
 	private cols: number;
 	private data: number[][];
 
-	constructor(rows: number, cols: number) {
+	constructor(rows: number = 1, cols: number = 1) {
 		this.rows = rows;
 		this.cols = cols;
-		this.data = Array(rows).fill([]).map(() => Array(cols).fill(0));
 
 		// init matrix with zeros
-		/* for (let i: number = 0; i < this.rows; i++) {
-			this.data[i] = [];
-			for (let j: number = 0; j < this.cols; i++) {
-				this.data[i][j] = 5;
-			}
-		} */
+		this.data = Array(rows).fill([]).map(() => Array(cols).fill(0));
+
 	}
+
+	// other constructor
+	public static arrayToMatrix(arr: number[]): Matrix {
+		let m = new Matrix(arr.length, 1);
+
+		for (let i: number = 0; i < arr.length; i++)
+			m.set(i, 0, arr[i]);
+
+		return m;
+	}
+
 
 	public map(func: Function): void {
 		for (let i: number = 0; i < this.rows; i++)
@@ -42,7 +43,7 @@ class Matrix {
 			this.data[i][j] = number;
 		else
 			throw new TypeError('index out of range');
-		
+
 	}
 
 	public get(i: number, j: number): number {
@@ -58,7 +59,7 @@ class Matrix {
 
 
 	/*
-	 * static matrix manipulation methods 
+	 * static matrix manipulation methods
 	 * return new matrix
 	 */
 
@@ -81,18 +82,26 @@ class Matrix {
 	}
 
 	// matrix dot product
-	public static computeDotProduct(a: Matrix, b: Matrix): Matrix {
-		if (a.getCols() !== b.getRows())
+	public static product(a: Matrix, b: Matrix): Matrix {
+		// in attempt to reduce function calls for speed
+		let aCols = a.getCols(),
+			bCols = b.getCols(),
+			aRows = a.getRows(),
+			bRows = b.getRows();
+
+		if (aCols !== bRows)
 			throw new TypeError('Matrix `a` column length does not match Matrix `b` row length');
-		
-		let m = new Matrix(a.getRows(), b.getCols());
 
+		let m = new Matrix(aRows, bCols);
+
+		let s; // efficiency
 		m.map((val: number, i: number, j: number) => {
-			let s = 0;
+			s = 0;
 
-			for (let k: number = 0; k < a.getCols(); k++)
-				s += a.get(i, k) * b.get(k, j);
-			
+			for (let k: number = 0; k < aCols; k++)
+				//s += a.get(i, k) * b.get(k, j);
+				s += a.data[i][k] * b.data[k][j]; // this is not 'allowed' but way faster (like 50%)
+
 			return s;
 		});
 
@@ -107,7 +116,7 @@ class Matrix {
 	}
 
 
-	/* 
+	/*
 	 * non static matrix manipulation methods
 	 * returns itself for chaining
 	 */
@@ -133,7 +142,7 @@ class Matrix {
 			this.map((val: number, i: number, j: number) => val * n.get(i, j));
 		} else {
 			this.map((val: number) => val * n);
-		}		
+		}
 
 		return this;
 	}
@@ -190,7 +199,7 @@ class Matrix {
 				text += '\n';
 		}
 
-		if (typeof window.chrome !== 'undefined')
+		if (typeof (<any>window).chrome !== 'undefined')
 			console.log('%c' + text, 'font-size: 12px; border-left: 1px solid black; border-right: 1px solid black; padding: 2px 4px; color: #333333; margin: 5px;');
 		else
 			console.log(text);
@@ -202,7 +211,7 @@ class Matrix {
 		for (let i: number = 0; i < this.rows; i++)
 			for (let j: number = 0; j < this.cols; j++)
 				m.set(i, j, this.data[i][j]);
-		
+
 		return m;
 	}
 }
