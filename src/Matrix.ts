@@ -36,7 +36,7 @@ class Matrix {
 				this.data[i][j] = func(this.data[i][j], i, j);
 	}
 
-	/* getter/setter */
+	/* getter/setter/append */
 
 	public set(i: number, j: number, number: number): void {
 		if (i < this.rows && j < this.cols)
@@ -53,10 +53,31 @@ class Matrix {
 			throw new TypeError('index out of range');
 	}
 
+	public addToBottom(arr: number[]): void {
+		if (arr.length !== this.cols)
+			throw new TypeError('invalid arguments');
+
+		this.data.push(arr);
+		this.rows++;
+	}
+
+	public addToRight(arr: number[]): void {
+		if (arr.length !== this.rows)
+			throw new TypeError('invalid arguments');
+		
+		for (let i: number = 0; i < this.rows; i++)
+			this.data[i].push(arr[i]);
+		
+		this.cols++;
+	}
+
 	public getRows(): number { return this.rows; }
 
 	public getCols(): number { return this.cols; }
 
+	public toArray(): number[][] {
+		return this.clone().data;
+	}
 
 	/*
 	 * static matrix manipulation methods
@@ -189,7 +210,6 @@ class Matrix {
 				if (this.data[i][j] >= 0) text += ' ';
 				if (this.data[i][j] >= 10) n--;
 				if (this.data[i][j] >= 100) n--;
-				if (this.data[i][j] >= 1000) n--;
 
 				text += this.data[i][j].toFixed(n);
 

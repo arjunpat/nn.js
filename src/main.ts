@@ -11,7 +11,7 @@ import { NetworkArch } from './interfaces';
 		return new Network(arch);
 	}
 
-	/* activation functions below */
+	/* activation functions */
 	namespace.activation = {};
 
 	namespace.activation.sigmoid = (stretch: number = 1) => (x: number) => 1 / (1 + (Math.E ** -x));

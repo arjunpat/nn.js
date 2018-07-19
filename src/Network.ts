@@ -25,32 +25,32 @@ class Network {
 
 	}
 
-	predict(inputs: number[] | Matrix): number[] {
+	predict(inputs: number[] | Matrix): Matrix {
 
 		// load in inputs
 		let lastNodes: Matrix;
 		
 		if (inputs instanceof Matrix) {
 			if (inputs.getRows() !== this.nodeNums[0] || inputs.getCols() !== 1)
-				throw new TypeError('invalid arguments');
+				throw new TypeError('Input array length must match input node number');
 
 			lastNodes = inputs;
 		} else {
 			if (inputs.length !== this.nodeNums[0])
-				throw new TypeError('invalid arguments');
+				throw new TypeError('Input array length must match input node number');
 				
-			lastNodes = Matrix.arrayToMatrix([...inputs, 1]);
+			lastNodes = Matrix.arrayToMatrix(inputs);
 		}
 
+		// feedfoward algorithm
 		for (let i: number = 0; i < this.weights.length; i++) {
-			this.weights[i].print();
-			lastNodes.print();
+			lastNodes.addToBottom([1]); // add bias column to the bottom
 			lastNodes = Matrix.product(this.weights[i], lastNodes);
 
 			lastNodes.map(this.activationFunction);
 		}
 
-		return [];
+		return lastNodes;
 	}
 
 }
