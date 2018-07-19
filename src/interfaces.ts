@@ -1,8 +1,8 @@
 
 export interface NetworkArch {
-    node_num: number[],
+    nodeNums: number[],
     activationFunction: Function,
-    randomize?: {
+    randomizeWeights?: {
         from: number,
         to: number,
         isInt: boolean

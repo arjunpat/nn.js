@@ -2,23 +2,23 @@ import Matrix from './Matrix';
 import { NetworkArch } from './interfaces';
 
 class Network {
-	private node_num: number[];
+	private nodeNums: number[];
 	private weights: Matrix[];
 	private activationFunction: Function;
 
 	constructor(arch: NetworkArch) {
 
-		this.node_num = arch.node_num;
+		this.nodeNums = arch.nodeNums;
 		this.activationFunction = arch.activationFunction;
 
 		this.weights = [];
-		for (let i: number = 0; i < arch.node_num.length - 1; i++) {
-			let before: number = arch.node_num[i],
-				after: number = arch.node_num[i + 1],
-				matrix: Matrix = new Matrix(before, after + 1); // +1 for the bias at the end
+		for (let i: number = 0; i < this.nodeNums.length - 1; i++) {
+			let before: number = this.nodeNums[i],
+				after: number = this.nodeNums[i + 1],
+				matrix: Matrix = new Matrix(after, before + 1); // +1 for the bias at the end
 			
-			if (arch.randomize)
-				matrix.randomize(arch.randomize.from, arch.randomize.to, arch.randomize.isInt);
+			if (arch.randomizeWeights)
+				matrix.randomize(arch.randomizeWeights.from, arch.randomizeWeights.to, arch.randomizeWeights.isInt);
 			
 			this.weights.push(matrix);
 		}
@@ -30,19 +30,25 @@ class Network {
 		// load in inputs
 		let lastNodes: Matrix;
 		
-		if (inputs instanceof Matrix)
+		if (inputs instanceof Matrix) {
+			if (inputs.getRows() !== this.nodeNums[0] || inputs.getCols() !== 1)
+				throw new TypeError('invalid arguments');
+
 			lastNodes = inputs;
-		else
+		} else {
+			if (inputs.length !== this.nodeNums[0])
+				throw new TypeError('invalid arguments');
+				
 			lastNodes = Matrix.arrayToMatrix([...inputs, 1]);
+		}
 
-		for (let i: number = 0; i < this.node_num.length - 1; i++) {
-			let w = i;
-
-			lastNodes = Matrix.product(lastNodes, this.weights[w]);
+		for (let i: number = 0; i < this.weights.length; i++) {
+			this.weights[i].print();
+			lastNodes.print();
+			lastNodes = Matrix.product(this.weights[i], lastNodes);
 
 			lastNodes.map(this.activationFunction);
 		}
-
 
 		return [];
 	}
