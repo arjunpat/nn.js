@@ -36,22 +36,28 @@ class Network {
 	predict(inputs: number[], returnAll: boolean = false): Matrix | Matrix[] {
 
 		// load in inputs
-		let lastNodes: Matrix[] = [];
-		
+
 		if (inputs.length !== this.nodeNums[0])
 			throw new TypeError('Input array length does not match input node number');
-			
-		lastNodes.push(Matrix.arrayToMatrix(inputs));
 
-		// TODO: don't actually sigmoid it yet
+		let input_m: Matrix = Matrix.arrayToMatrix(inputs);
+		let lastNodes: Matrix[] = [];
+		let mat = input_m.clone();
+
+		lastNodes.push(input_m.clone());
 
 		// feedfoward algorithm
 		for (let i: number = 0; i < this.weights.length; i++) {
-			let temp: Matrix = lastNodes[lastNodes.length - 1].clone().addToBottom([1]); // add bias column to the bottom
-			lastNodes.push(Matrix.product(this.weights[i], temp));
+			mat.addToBottom([this.bias]); // add bias column to the bottom
+			mat = Matrix.product(this.weights[i], mat);
 
-			lastNodes[lastNodes.length - 1].map(this.activationFunction.y);
+			lastNodes.push(mat.clone());
+
+			mat.map(this.activationFunction.y);
 		}
+
+		// when calculating the error, already expecting it to have run through activation function
+		lastNodes[lastNodes.length - 1].map(this.activationFunction.y);
 
 		if (returnAll)
 			return lastNodes;
@@ -75,24 +81,12 @@ class Network {
 		for (let i: number = this.weights.length - 1; i >= 0; i--) {
 			// calc GRADIENT DECENT
 			let gradients = guessOutputs_m[i + 1].clone();
-			/* console.log('gradients', guessOutputs_m.length, i + 1);
-			gradients.print(); */
-			gradients.map(this.activationFunction.dydy);
-			/* console.log('after calc');
-			gradients.print();
-			console.log('last-error');
-			lastError.print(); */
+			gradients.map(this.activationFunction.dydx);
 			gradients.multiply(lastError).multiply(this.learningRate);
-			/* console.log('after-multiply');
-			gradients.print(); */
 
-			// Matrix.transpose(guessOutputs_m[i]).print()
+			// compute deltas based on gradient
 			let deltas = Matrix.product(gradients, Matrix.transpose(guessOutputs_m[i]));
-
-			// deltas.print();
 			deltas.addToRight(gradients.to1dArray()); // fill bias
-			/* console.log('gradients to fix weights with');
-			deltas.print(); */
 
 			// fix weights
 			this.weights[i].add(deltas);

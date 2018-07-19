@@ -15,9 +15,16 @@ import { NetworkArch } from './interfaces';
 	namespace.activation = {};
 
 	namespace.activation.sigmoid = (stretch: number = 1) => {
+		let sig = (x: number) => 1 / (1 + (Math.E ** -(x / stretch)));
+
 		return {
-			y: (x: number) => 1 / (1 + (Math.E ** -(x / stretch))),
-			dydy: (y: number) => y * (1 - y)
+			y: sig,
+			dydx(x: number): number {
+				let y = sig(x);
+
+				return y * (1 - y);
+			},
+			dydy: (y: number): number => y * (1 - y)
 		};
 	}
 	// ReLU's

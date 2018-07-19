@@ -1,8 +1,8 @@
 
 export interface ActivationFunction {
     y: Function,
-    dydy?: Function,
-    dydx?: Function
+    dydx?: Function,
+    dydy?: Function
 }
 
 export interface NetworkArch {
