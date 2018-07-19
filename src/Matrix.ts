@@ -216,7 +216,7 @@ class Matrix {
 	}
 
 	public removeCol(colNumber: number): Matrix {
-		if (!this.checkIndices(1, colNumber))
+		if (!this.checkIndices(0, colNumber))
 			throw new TypeError('invalid arguments');
 		
 
@@ -230,7 +230,7 @@ class Matrix {
 
 	public removeRow(rowNumber: number): Matrix {
 
-		if (!this.checkIndices(rowNumber, 1))
+		if (!this.checkIndices(rowNumber, 0))
 			throw new TypeError('invalid arguments');
 
 		this.data.splice(rowNumber, 1);

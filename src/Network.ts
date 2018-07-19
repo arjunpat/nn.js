@@ -46,7 +46,7 @@ class Network {
 
 		lastNodes.push(input_m.clone());
 
-		// feedfoward algorithm
+		// foward prop algorithm
 		for (let i: number = 0; i < this.weights.length; i++) {
 			mat.addToBottom([this.bias]); // add bias column to the bottom
 			mat = Matrix.product(this.weights[i], mat);
@@ -71,7 +71,6 @@ class Network {
 		let desiredOutput_m: Matrix = Matrix.arrayToMatrix(desiredOutput);
 		let guessOutputs_m: any = this.predict(inputs, true); // Matrix[]
 		let guessOutput_m: Matrix = guessOutputs_m[guessOutputs_m.length - 1];
-
 		if (desiredOutput_m.getRows() !== guessOutput_m.getRows() || desiredOutput_m.getCols() !== 1)
 			throw new TypeError('Target output does not match output schema');
 		
@@ -80,12 +79,14 @@ class Network {
 		let lastError: Matrix = Matrix.subtract(desiredOutput_m, guessOutput_m);
 		for (let i: number = this.weights.length - 1; i >= 0; i--) {
 			// calc GRADIENT DECENT
-			let gradients = guessOutputs_m[i + 1].clone();
-			gradients.map(this.activationFunction.dydx);
-			gradients.multiply(lastError).multiply(this.learningRate);
+			let gradients = guessOutputs_m[i + 1]
+				.clone()
+				.map(this.activationFunction.dydx)
+				.multiply(lastError)
+				.multiply(this.learningRate);
 
 			// compute deltas based on gradient
-			let deltas = Matrix.product(gradients, Matrix.transpose(guessOutputs_m[i]));
+			let deltas: Matrix = Matrix.product(gradients, Matrix.transpose(guessOutputs_m[i]));
 			deltas.addToRight(gradients.to1dArray()); // fill bias
 
 			// fix weights

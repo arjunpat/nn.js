@@ -1,6 +1,7 @@
-let inputNodeNumber = 3;
 let net = nn.build({
-    nodeNums: [inputNodeNumber, 12, 122, 18],
+    nodeNums: [
+        2, 32, 32, 32, 1
+    ],
     activationFunction: nn.activation.sigmoid(),
     randomizeWeights: {
         from: -1,
@@ -10,22 +11,29 @@ let net = nn.build({
     learningRate: .1
 });
 
-/* let arr = [];
-for (let i = 0; i < inputNodeNumber; i++)
-    arr.push(Math.random() * 10);
- */
-let res;
-console.time();
-//res = net.predict([2, 4, 1], true);
-console.timeEnd();
-// res.print();
-// console.log(res);
-// console.log(res.toArray());
 
-let output = [0, .6, .2222, 0, .6666, .2, 0, .6, .8, .694, .6, .2, 0, .6, .2, 0, .6, .2];
+// XOR problem
+let inputs = [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+];
+let outputs = [
+    [0],
+    [1],
+    [1],
+    [0]
+];
+
 console.time();
-for (let i = 0; i < 4000; i++)
-    net.train([2, 4, 1], output);
+for (let i = 0; i < 40000; i++) {
+    let num = Math.floor(Math.random() * 4);;
+    net.train(inputs[num], outputs[num]);
+}
 console.timeEnd();
 
-net.predict([2, 4, 1]).print();
+net.predict([0, 0]).print(15);
+net.predict([0, 1]).print(15);
+net.predict([1, 0]).print(15);
+net.predict([1, 1]).print(15);
