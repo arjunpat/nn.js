@@ -27,6 +27,9 @@ class Network {
 			
 			if (arch.randomizeWeights)
 				matrix.randomize(arch.randomizeWeights.from, arch.randomizeWeights.to, arch.randomizeWeights.isInt);
+
+			if (arch.weightInitValue)
+				matrix.map(() => arch.weightInitValue);
 			
 			this.weights.push(matrix);
 		}

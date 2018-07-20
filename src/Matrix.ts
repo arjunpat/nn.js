@@ -1,8 +1,39 @@
+/* temp stuff */
+declare class GPU {};
+const gpu: any = new GPU();
+
+function matMul(a: number[][], b: number[][], size: number, x: number, y: number) {
+	let func = gpu.createKernel(function(a: number[][], b: number[][], size: number) {
+		let sum = 0;
+		for (let i = 0; i < size; i++)
+			sum += a[this.thread.y][i] * b[i][this.thread.x];
+		
+		return sum;
+	}, {
+		loopMaxIterations: 100000
+	}).setOutput([x, y]);
+	
+	return func(a, b, size)
+}
 
 /* helper functions */
 function checkDimensions(a: Matrix, b: Matrix) {
 	if (a.getRows() !== b.getRows() || a.getCols() !== b.getCols())
 		throw new TypeError('Matrix dimensions do not match');
+}
+
+function isMatrix(vals: number[][]): boolean {
+
+	if (!vals[0] || !vals[0][0])
+		return false;
+
+	let rows = vals.length;	
+	let cols = vals[0].length;
+	
+	for (let i = 0; i < rows; i++)
+		if (vals[i].length !== cols)
+			return false;
+	return true;
 }
 
 class Matrix {
@@ -11,6 +42,9 @@ class Matrix {
 	private data: number[][];
 
 	constructor(rows: number = 1, cols: number = 1) {
+		if (rows < 1 || cols < 1)
+			throw new TypeError('Dimensions must be greater than 0');
+
 		this.rows = rows;
 		this.cols = cols;
 
@@ -122,6 +156,7 @@ class Matrix {
 
 	// matrix product - the real deal
 	public static product(a: Matrix, b: Matrix): Matrix {
+
 		// in attempt to reduce function calls for speed
 		let aCols = a.getCols(),
 			bCols = b.getCols(),
@@ -143,6 +178,8 @@ class Matrix {
 
 			return s;
 		});
+
+		//m.data = matMul(a.data, b.data, aCols, bCols, aRows);
 
 		return m;
 	}
@@ -235,6 +272,19 @@ class Matrix {
 
 		this.data.splice(rowNumber, 1);
 		this.rows--;
+
+		return this;
+	}
+
+	public setData(data: number[][]): Matrix {
+
+		if (!isMatrix(data))
+			throw new TypeError('Expected matrix but recieved other type');
+		
+		if (data.length !== this.rows || data[0].length !== this.cols)
+			throw new TypeError('Dimensions do not match Matrix dimensions');
+		
+		this.data = data;
 
 		return this;
 	}

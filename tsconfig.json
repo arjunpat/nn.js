@@ -6,6 +6,6 @@
         "module": "es6",
         "target": "es6",
         "noImplicitReturns": true,
-        "allowJs": false
+        "allowJs": true
     }
 }

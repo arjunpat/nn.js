@@ -4,5 +4,10 @@ node_modules/
 # even though this is supposed to live in our git repos
 package-lock.json
 
+dist/*
+!dist/index.html
+!dist/run.js
+
 # for now, people can build themselves
+# i don't need this line. it is just to be explicit
 dist/nn.js

@@ -13,6 +13,7 @@ export interface NetworkArch {
         to: number,
         isInt: boolean
     },
+    weightInitValue?: number,
     bias?: number,
     learningRate?: number
 }
