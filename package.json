@@ -1,11 +1,11 @@
 {
 	"name": "nn.js",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "A lightweight, high-level neural network library written in TypeScript.",
 	"main": "src/main.ts",
 	"scripts": {
-		"build": "webpack",
-		"watch": "webpack --watch"
+		"build": "webpack --config webpack.production.config.js",
+		"watch": "webpack --watch --config webpack.dev.config.js"
 	},
 	"repository": {
 		"type": "git",
