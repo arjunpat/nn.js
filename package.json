@@ -1,6 +1,6 @@
 {
 	"name": "nn.js",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "A lightweight, high-level neural network library written in TypeScript.",
 	"main": "src/main.ts",
 	"scripts": {
